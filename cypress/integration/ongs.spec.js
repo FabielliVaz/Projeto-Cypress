@@ -1,8 +1,9 @@
 // Este comando traz as referências de comandos do Cypress, quando digitar cy. ele traz a lista de comandos e seus respectivos resultados/efeitos
 /// <reference types="cypress" />
 
-//criar primeira estrutura de testes utilizando o mocha
+    //criar primeira estrutura de testes utilizando o mocha
 describe('Ongs', () => {
+    //it.skip para de executar o teste
     it('devem poder realizar um cadastro', () => {
         cy.visit('http://localhost:3000/register')
         //cy.get - busca um elemento
@@ -26,16 +27,29 @@ describe('Ongs', () => {
         // alias (as) é uma variável temporária, basicamente ela vai salvar a rota especificada como um alias para usar posteriormente
         // Sempre passar o cy.server e o cy.route antes da ação que dispara a chamada http
         
-        cy.server();
+        //cy.server();
         cy.route('POST','**/ongs').as('postOng');
 
         cy.get('[data-cy=submit]').click();
         // .wait consegue esperar até a chamada ser finalizada
         cy.wait('@postOng').then((xhr) => {
             expect(xhr.status).be.eq(200);
+         // validar a resposta
+            expect(xhr.response.body).has.property('id');
+            expect(xhr.response.body.id).is.not.null;
         })
+
+
     });
 
     it('deve poder realizar um login no sistema', () => {
+         
+        const createOngId = Cypress.env('createdOngId');
+
+        cy.log(createOngId);
+
+        cy.visit('http://localhost:3000/');
+        cy.get('input').type(createOngId);
+        cy.get('.button').click();
     });
-})
+});

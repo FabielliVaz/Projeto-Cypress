@@ -18,3 +18,10 @@ import './commands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+//com o before garante que será executado antes de qualquer teste
+before(() => {
+    //cy.server - para route e request
+    cy.server();
+    cy.createOng();
+});
